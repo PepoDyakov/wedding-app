@@ -1,0 +1,16 @@
+# Backend
+wedding-app-api/build/
+wedding-app-api/.gradle/
+wedding-app-api/.idea/
+
+# Frontend
+wedding-app-web/node_modules/
+wedding-app-web/.next/
+wedding-app-web/.env.local
+
+# Docker
+*.env
+
+# Task definitions with secrets
+api-task-definition.json
+web-task-definition.json

@@ -1,0 +1,134 @@
+type Query {
+    hello: String!
+    me: User
+    userById(id: ID!): User
+    userByEmail(email: String!): User
+    weddingById(id: ID!): Wedding
+    myWeddings: [Wedding!]!
+    guestsByWedding(weddingId: ID!): [Guest!]!
+    guestPreferences(token: String!): GuestPreference
+    guestByToken(token: String!): Guest
+}
+
+type Mutation {
+    registerUser(input: RegisterUserInput!): AuthPayload!
+    loginUser(input: LoginUserInput!): AuthPayload!
+    createWedding(input: CreateWeddingInput!): Wedding!
+    addGuest(input: AddGuestInput!): Guest!
+    updateRsvpStatus(guestId: ID!, rsvpStatus: RsvpStatus!): Guest!
+    respondToInvitation(token: String!, status: RsvpStatus!): Guest!
+    submitPreferences(input: SubmitPreferencesInput!): GuestPreference!
+    sendInvitation(guestId: ID!): Guest!
+    sendAllInvitations(weddingId: ID!): [Guest!]!
+    updateWedding(input: UpdateWeddingInput!): Wedding!
+    deleteWedding(id: ID!): Boolean!
+    deleteGuest(guestId: ID!): Boolean!
+}
+
+input RegisterUserInput {
+    firstName: String!
+    lastName: String!
+    email: String!
+    password: String!
+}
+
+type User {
+    id: ID!
+    firstName: String!
+    lastName: String!
+    email: String!
+    createdAt: String!
+    updatedAt: String!
+}
+
+input LoginUserInput {
+    email: String!
+    password: String!
+}
+
+input SubmitPreferencesInput {
+    token: String!
+    foodPreference: String
+    drinkPreference: String
+    musicPreference: String
+    dietaryRestrictions: String
+    additionalNotes: String
+}
+
+type AuthPayload {
+    token: String!
+    user: User!
+}
+
+type Wedding {
+    id: ID!
+    user: User!
+    title: String!
+    description: String
+    weddingDate: String!
+    venue: String!
+    venueAddress: String
+    customMessage: String
+    themeColor: String
+    createdAt: String!
+    updatedAt: String!
+}
+
+input CreateWeddingInput {
+    title: String!
+    description: String
+    weddingDate: String!
+    venue: String!
+    venueAddress: String
+    customMessage: String
+    themeColor: String
+}
+
+input AddGuestInput {
+    weddingId: ID!
+    firstName: String!
+    lastName: String!
+    email: String!
+}
+
+enum RsvpStatus {
+    PENDING
+    ACCEPTED
+    DECLINED
+}
+
+type Guest {
+    id: ID!
+    wedding: Wedding!
+    firstName: String!
+    lastName: String!
+    email: String!
+    rsvpStatus: RsvpStatus!
+    invitationToken: String!
+    qrCode: String!
+    createdAt: String!
+    updatedAt: String!
+}
+
+type GuestPreference {
+    id: ID!
+    guest: Guest!
+    foodPreference: String
+    drinkPreference: String
+    musicPreference: String
+    dietaryRestrictions: String
+    additionalNotes: String
+    createdAt: String!
+    updatedAt: String!
+}
+
+input UpdateWeddingInput {
+    id: ID!
+    title: String!
+    description: String
+    weddingDate: String!
+    venue: String!
+    venueAddress: String
+    customMessage: String
+    themeColor: String
+}

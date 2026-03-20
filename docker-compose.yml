@@ -1,0 +1,53 @@
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: weddingdb
+      POSTGRES_USER: weddingapp
+      POSTGRES_PASSWORD: weddingapp123
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U weddingapp -d weddingdb"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  mailhog:
+    image: mailhog/mailhog
+    ports:
+      - "1026:1025"
+      - "8026:8025"
+
+  api:
+    build: ./wedding-app-api
+    ports:
+      - "8080:8080"
+    environment:
+      DB_URL: jdbc:postgresql://db:5432/weddingdb
+      DB_USERNAME: weddingapp
+      DB_PASSWORD: weddingapp123
+      JWT_SECRET: s%[Lt%Nc9Qia1ulCL"£<539aW!41a8|3,|=h&K/]!2$3,5+*w8
+      JWT_EXPIRATION: "86400000"
+      APP_BASE_URL: http://localhost:3000
+      MAIL_FROM: invitations@weddingapp.com
+      SPRING_MAIL_HOST: mailhog
+      SPRING_MAIL_PORT: "1025"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  web:
+    build:
+      context: ./wedding-app-web
+      args:
+        NEXT_PUBLIC_GRAPHQL_URL: http://localhost:8080/graphql
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
+
+volumes:
+  pgdata:
