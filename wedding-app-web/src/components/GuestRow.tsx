@@ -43,22 +43,24 @@ export default function GuestRow({
     <>
       <tr
         onClick={handleToggle}
-        className="cursor-pointer hover:bg-gray-50 transition-colors"
+        className="cursor-pointer hover:bg-[#FAF7F2] transition-colors duration-200 border-b border-[#F8F4EF]"
       >
-        <td className="px-6 py-4 text-sm">
-          <span className="mr-2 text-gray-400">{expanded ? "▼" : "▶"}</span>
+        <td className="px-6 py-4 text-sm text-[#2D2D2D]">
+          <span className="mr-2 text-[#D0C8BE] text-xs">
+            {expanded ? "▼" : "▶"}
+          </span>
           {guest.firstName} {guest.lastName}
         </td>
-        <td className="px-6 py-4 text-sm text-gray-500">{guest.email}</td>
+        <td className="px-6 py-4 text-sm text-[#A09890]">{guest.email}</td>
         <td className="px-6 py-4">
           <span
-            className={`px-2 py-1 text-xs font-medium rounded-full ${statusColor[guest.rsvpStatus]}`}
+            className={`px-3 py-1 text-[10px] font-medium ${statusColor[guest.rsvpStatus]}`}
           >
             {guest.rsvpStatus}
           </span>
         </td>
         <td className="px-6 py-4 text-right">
-          <div className="flex justify-end gap-3">
+          <div className="flex justify-end gap-4">
             <button
               onClick={(e) => {
                 e.stopPropagation();
@@ -67,73 +69,81 @@ export default function GuestRow({
                   `${guest.firstName} ${guest.lastName}`,
                 );
               }}
-              className="text-sm text-blue-600 hover:underline"
+              className="text-xs text-[#B89B7A] hover:text-[#2D2D2D] transition-colors duration-300"
             >
-              Send Invitation
+              Send
             </button>
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 onDeleteGuest(guest.id, `${guest.firstName} ${guest.lastName}`);
               }}
-              className="text-sm text-red-600 hover:underline"
+              className="text-xs text-[#D0C8BE] hover:text-[#A04040] transition-colors duration-300"
             >
-              Delete
+              Remove
             </button>
           </div>
         </td>
       </tr>
       {expanded && (
         <tr>
-          <td colSpan={4} className="px-6 py-4 bg-gray-50">
+          <td colSpan={4} className="px-6 py-5 bg-[#FAF7F2]">
             {prefsLoading ? (
-              <p className="text-sm text-gray-400">Loading preferences...</p>
+              <p className="text-sm text-[#C8B8A4]">Loading preferences...</p>
             ) : !hasPreferences ? (
-              <p className="text-sm text-gray-400">
+              <p className="text-sm text-[#C8B8A4]">
                 No preferences submitted yet.
               </p>
             ) : (
               <div className="grid grid-cols-2 gap-4 text-sm">
                 {prefs.foodPreference && (
                   <div>
-                    <span className="font-medium text-gray-700">Food: </span>
-                    <span className="text-gray-600">
-                      {prefs.foodPreference}
+                    <span className="text-[10px] text-[#A09890] uppercase tracking-wider">
+                      Food
                     </span>
+                    <p className="text-[#2D2D2D] mt-0.5">
+                      {prefs.foodPreference}
+                    </p>
                   </div>
                 )}
                 {prefs.drinkPreference && (
                   <div>
-                    <span className="font-medium text-gray-700">Drink: </span>
-                    <span className="text-gray-600">
-                      {prefs.drinkPreference}
+                    <span className="text-[10px] text-[#A09890] uppercase tracking-wider">
+                      Drink
                     </span>
+                    <p className="text-[#2D2D2D] mt-0.5">
+                      {prefs.drinkPreference}
+                    </p>
                   </div>
                 )}
                 {prefs.musicPreference && (
                   <div>
-                    <span className="font-medium text-gray-700">Music: </span>
-                    <span className="text-gray-600">
-                      {prefs.musicPreference}
+                    <span className="text-[10px] text-[#A09890] uppercase tracking-wider">
+                      Music
                     </span>
+                    <p className="text-[#2D2D2D] mt-0.5">
+                      {prefs.musicPreference}
+                    </p>
                   </div>
                 )}
                 {prefs.dietaryRestrictions && (
                   <div>
-                    <span className="font-medium text-gray-700">
-                      Dietary Restrictions:{" "}
+                    <span className="text-[10px] text-[#A09890] uppercase tracking-wider">
+                      Dietary restrictions
                     </span>
-                    <span className="text-gray-600">
+                    <p className="text-[#2D2D2D] mt-0.5">
                       {prefs.dietaryRestrictions}
-                    </span>
+                    </p>
                   </div>
                 )}
                 {prefs.additionalNotes && (
                   <div className="col-span-2">
-                    <span className="font-medium text-gray-700">Notes: </span>
-                    <span className="text-gray-600">
-                      {prefs.additionalNotes}
+                    <span className="text-[10px] text-[#A09890] uppercase tracking-wider">
+                      Notes
                     </span>
+                    <p className="text-[#2D2D2D] mt-0.5">
+                      {prefs.additionalNotes}
+                    </p>
                   </div>
                 )}
               </div>

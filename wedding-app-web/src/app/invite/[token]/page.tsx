@@ -3,6 +3,7 @@
 import { useReducer, useEffect } from "react";
 import { useQuery, useMutation } from "@apollo/client/react";
 import { useParams } from "next/navigation";
+import { useToast } from "@/lib/ToastContext";
 import {
   GUEST_BY_TOKEN,
   RESPOND_TO_INVITATION,
@@ -17,7 +18,6 @@ import {
   SubmitPreferencesInput,
 } from "@/graphql/types";
 import { SkeletonDetail } from "@/components/Skeleton";
-import { useToast } from "@/lib/ToastContext";
 
 type PreferencesFormState = {
   foodPreference: string;
@@ -57,12 +57,12 @@ function preferencesReducer(
 
 export default function InvitationPage() {
   const { token } = useParams<{ token: string }>();
+  const { showToast } = useToast();
 
   const [prefForm, dispatch] = useReducer(
     preferencesReducer,
     initialPreferencesForm,
   );
-  const { showToast } = useToast();
 
   const { data, loading } = useQuery<GuestByTokenResponse>(GUEST_BY_TOKEN, {
     variables: { token },
@@ -105,9 +105,8 @@ export default function InvitationPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <main className="max-w-2xl mx-auto px-4 py-12 space-y-8">
-          <SkeletonDetail />
+      <div className="min-h-screen bg-[#F7F3EE]">
+        <main className="max-w-lg mx-auto px-4 py-12 space-y-3">
           <SkeletonDetail />
           <SkeletonDetail />
         </main>
@@ -117,12 +116,13 @@ export default function InvitationPage() {
 
   if (!data?.guestByToken) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="bg-white rounded-lg shadow-md p-8 text-center max-w-md">
-          <h1 className="text-xl font-bold text-gray-800 mb-2">
-            Invitation Not Found
+      <div className="min-h-screen flex items-center justify-center bg-[#F7F3EE]">
+        <div className="bg-white border border-[#E8E0D5] p-10 text-center max-w-sm">
+          <div className="w-8 h-px bg-[#D0C8BE] mx-auto mb-6" />
+          <h1 className="font-serif text-xl text-[#2D2D2D] mb-3">
+            Invitation not found
           </h1>
-          <p className="text-gray-500">
+          <p className="text-sm text-[#A09890]">
             This invitation link is invalid or has expired.
           </p>
         </div>
@@ -132,15 +132,15 @@ export default function InvitationPage() {
 
   const guest = data.guestByToken;
   const wedding = guest.wedding;
-  const themeColor = wedding.themeColor ?? "#3498db";
+  const themeColor = wedding.themeColor ?? "#B89B7A";
 
   const handleRsvp = async (status: "ACCEPTED" | "DECLINED") => {
     try {
       await respondToInvitation({ variables: { token, status } });
       showToast(
         status === "ACCEPTED"
-          ? "Thank you! We can't wait to see you there!"
-          : "We're sorry you can't make it. Thank you for letting us know.",
+          ? "Thank you! We can\u2019t wait to see you there!"
+          : "We\u2019re sorry you can\u2019t make it. Thank you for letting us know.",
         "success",
       );
     } catch (err: unknown) {
@@ -152,7 +152,7 @@ export default function InvitationPage() {
     }
   };
 
-  const handleSubmitPreferences = async (e: React.SubmitEvent) => {
+  const handleSubmitPreferences = async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
@@ -179,13 +179,45 @@ export default function InvitationPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <main className="max-w-2xl mx-auto px-4 py-12">
-        <div className="bg-white rounded-lg shadow-md p-8 text-center mb-8">
-          <h1 className="text-3xl font-bold" style={{ color: themeColor }}>
-            {wedding.title}
+    <div className="min-h-screen bg-[#F7F3EE]">
+      <main className="max-w-lg mx-auto px-4 py-12">
+        <div className="bg-white border border-[#E8E0D5] p-10 text-center mb-3">
+          <div className="w-10 h-px bg-[#D0C8BE] mx-auto mb-6" />
+
+          <p className="text-[9px] text-[#B89B7A] uppercase tracking-[3px] mb-6">
+            You are invited
+          </p>
+
+          <h1 className="font-serif text-3xl text-[#2D2D2D] leading-tight">
+            {wedding.title.split("&")[0]?.trim() ??
+              wedding.title.split("and")[0]?.trim() ??
+              wedding.title}
           </h1>
-          <p className="text-gray-500 mt-3 text-lg">
+          <p className="font-serif text-lg text-[#D0C8BE] my-1">&</p>
+          <h1 className="font-serif text-3xl text-[#2D2D2D] leading-tight">
+            {wedding.title.includes("&")
+              ? wedding.title
+                  .split("&")[1]
+                  ?.replace(/'s Wedding|'s wedding/i, "")
+                  .trim()
+              : wedding.title.includes("and")
+                ? wedding.title
+                    .split("and")[1]
+                    ?.replace(/'s Wedding|'s wedding/i, "")
+                    .trim()
+                : ""}
+          </h1>
+
+          <div className="flex items-center gap-3 my-6">
+            <div className="flex-1 h-px bg-[#E8E0D5]" />
+            <div
+              className="w-1.5 h-1.5 rotate-45"
+              style={{ backgroundColor: themeColor }}
+            />
+            <div className="flex-1 h-px bg-[#E8E0D5]" />
+          </div>
+
+          <p className="text-sm text-[#2D2D2D] font-medium">
             {new Date(wedding.weddingDate).toLocaleDateString("en-US", {
               weekday: "long",
               year: "numeric",
@@ -193,72 +225,71 @@ export default function InvitationPage() {
               day: "numeric",
             })}
           </p>
-          <p className="text-gray-600 mt-1">{wedding.venue}</p>
+          <p className="text-sm text-[#777] mt-1">{wedding.venue}</p>
           {wedding.venueAddress && (
-            <p className="text-gray-400 text-sm mt-1">{wedding.venueAddress}</p>
+            <p className="text-xs text-[#AAA] mt-1">{wedding.venueAddress}</p>
           )}
+
           {wedding.customMessage && (
-            <p
-              className="mt-6 italic text-gray-600 border-l-4 pl-4 text-left"
-              style={{ borderColor: themeColor }}
-            >
-              {wedding.customMessage}
+            <p className="font-serif text-sm text-[#888] italic leading-relaxed mt-6 px-2">
+              &ldquo;{wedding.customMessage}&rdquo;
             </p>
           )}
-        </div>
 
-        <div className="bg-white rounded-lg shadow-md p-8 mb-8">
-          <h2 className="text-xl font-semibold mb-2">
-            Hello, {guest.firstName}!
-          </h2>
+          <div className="mt-8">
+            <p className="text-[9px] text-[#B89B7A] uppercase tracking-[2px] mb-4">
+              {guest.rsvpStatus === "PENDING"
+                ? "Kindly respond"
+                : "Your response"}
+            </p>
 
-          {guest.rsvpStatus !== "PENDING" ? (
-            <div className="text-sm text-gray-600">
-              <p>
-                You have already responded:{" "}
+            {guest.rsvpStatus !== "PENDING" && (
+              <p className="text-sm text-[#A09890] mb-4">
+                You responded:{" "}
                 <span
-                  className={`font-semibold ${guest.rsvpStatus === "ACCEPTED" ? "text-green-600" : "text-red-600"}`}
+                  className={`font-medium ${
+                    guest.rsvpStatus === "ACCEPTED"
+                      ? "text-[#4A7C50]"
+                      : "text-[#A04040]"
+                  }`}
                 >
                   {guest.rsvpStatus === "ACCEPTED"
                     ? "Attending"
-                    : "Not Attending"}
+                    : "Not attending"}
                 </span>
               </p>
-              <p className="mt-2 text-gray-400">
-                You can change your response below.
-              </p>
-            </div>
-          ) : (
-            <p className="text-gray-600 mb-4">Will you be joining us?</p>
-          )}
+            )}
 
-          <div className="flex gap-4 mt-4">
-            <button
-              onClick={() => handleRsvp("ACCEPTED")}
-              className="flex-1 py-3 rounded-md text-white font-medium transition-colors"
-              style={{ backgroundColor: themeColor }}
-            >
-              Accept
-            </button>
-            <button
-              onClick={() => handleRsvp("DECLINED")}
-              className="flex-1 py-3 bg-gray-200 text-gray-700 rounded-md font-medium hover:bg-gray-300 transition-colors"
-            >
-              Decline
-            </button>
+            <div className="flex gap-2">
+              <button
+                onClick={() => handleRsvp("ACCEPTED")}
+                className="flex-1 py-3 text-[#FEFCFA] text-[11px] uppercase tracking-[1.5px] hover:opacity-90 transition-opacity duration-300"
+                style={{ backgroundColor: themeColor }}
+              >
+                Joyfully accept
+              </button>
+              <button
+                onClick={() => handleRsvp("DECLINED")}
+                className="flex-1 py-3 border border-[#E0D5C8] text-[#777] text-[11px] uppercase tracking-[1.5px] hover:border-[#2D2D2D] hover:text-[#2D2D2D] transition-all duration-300"
+              >
+                Respectfully decline
+              </button>
+            </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-md p-8">
-          <h2 className="text-xl font-semibold mb-4">Your Preferences</h2>
-          <p className="text-sm text-gray-500 mb-6">
-            Help us make this celebration special for you.
+        <div className="bg-white border border-[#E8E0D5] p-8">
+          <h2 className="font-serif text-lg text-[#2D2D2D] mb-1">
+            Your preferences
+          </h2>
+          <p className="text-xs text-[#A09890] mb-6">
+            Help us make this day special for you
           </p>
 
-          <form onSubmit={handleSubmitPreferences} className="space-y-4">
+          <form onSubmit={handleSubmitPreferences} className="space-y-5">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Food Preference
+              <label className="block text-[9px] text-[#A09890] uppercase tracking-[1px] mb-2">
+                Food preference
               </label>
               <input
                 type="text"
@@ -271,13 +302,13 @@ export default function InvitationPage() {
                   })
                 }
                 placeholder="e.g. Vegetarian, no shellfish..."
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full py-2 bg-transparent border-b border-[#E8E0D5] text-sm text-[#2D2D2D] placeholder:text-[#D0C8BE] focus:outline-none focus:border-[#B89B7A] transition-colors"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Drink Preference
+              <label className="block text-[9px] text-[#A09890] uppercase tracking-[1px] mb-2">
+                Drink preference
               </label>
               <input
                 type="text"
@@ -290,13 +321,13 @@ export default function InvitationPage() {
                   })
                 }
                 placeholder="e.g. Red wine, non-alcoholic..."
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full py-2 bg-transparent border-b border-[#E8E0D5] text-sm text-[#2D2D2D] placeholder:text-[#D0C8BE] focus:outline-none focus:border-[#B89B7A] transition-colors"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Music Preference
+              <label className="block text-[9px] text-[#A09890] uppercase tracking-[1px] mb-2">
+                Song request
               </label>
               <input
                 type="text"
@@ -308,14 +339,14 @@ export default function InvitationPage() {
                     value: e.target.value,
                   })
                 }
-                placeholder="e.g. Jazz, 80s pop, anything danceable..."
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="e.g. First dance suggestion..."
+                className="w-full py-2 bg-transparent border-b border-[#E8E0D5] text-sm text-[#2D2D2D] placeholder:text-[#D0C8BE] focus:outline-none focus:border-[#B89B7A] transition-colors"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Dietary Restrictions
+              <label className="block text-[9px] text-[#A09890] uppercase tracking-[1px] mb-2">
+                Dietary restrictions
               </label>
               <textarea
                 value={prefForm.dietaryRestrictions}
@@ -328,13 +359,13 @@ export default function InvitationPage() {
                 }
                 placeholder="Any allergies or dietary needs..."
                 rows={2}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full py-2 bg-transparent border-b border-[#E8E0D5] text-sm text-[#2D2D2D] placeholder:text-[#D0C8BE] focus:outline-none focus:border-[#B89B7A] transition-colors resize-none"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Additional Notes
+              <label className="block text-[9px] text-[#A09890] uppercase tracking-[1px] mb-2">
+                Special notes
               </label>
               <textarea
                 value={prefForm.additionalNotes}
@@ -345,22 +376,25 @@ export default function InvitationPage() {
                     value: e.target.value,
                   })
                 }
-                placeholder="Anything else you'd like us to know..."
+                placeholder="Anything we should know..."
                 rows={2}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full py-2 bg-transparent border-b border-[#E8E0D5] text-sm text-[#2D2D2D] placeholder:text-[#D0C8BE] focus:outline-none focus:border-[#B89B7A] transition-colors resize-none"
               />
             </div>
 
             <button
               type="submit"
               disabled={submittingPrefs}
-              className="w-full py-2 px-4 text-white rounded-md transition-colors disabled:opacity-50"
-              style={{ backgroundColor: themeColor }}
+              className="w-full py-3 bg-[#2D2D2D] text-[#FEFCFA] text-[11px] uppercase tracking-[1.5px] hover:bg-[#B89B7A] disabled:bg-[#D0C8BE] transition-colors duration-300"
             >
-              {submittingPrefs ? "Saving..." : "Save Preferences"}
+              {submittingPrefs ? "Saving..." : "Save preferences"}
             </button>
           </form>
         </div>
+
+        <p className="text-center text-[10px] text-[#C8B8A4] tracking-wider mt-6">
+          Powered by TheWeddingApp
+        </p>
       </main>
     </div>
   );

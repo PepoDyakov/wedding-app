@@ -1,8 +1,10 @@
 "use client";
 
-import { useReducer, useState } from "react";
+import { useState, useReducer } from "react";
 import { useQuery, useMutation } from "@apollo/client/react";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/lib/AuthContext";
+import { useToast } from "@/lib/ToastContext";
 import {
   MY_WEDDINGS,
   CREATE_WEDDING,
@@ -15,9 +17,8 @@ import {
   DeleteWeddingResponse,
 } from "@/graphql/types";
 import ProtectedRoute from "@/components/ProtectedRoute";
-import { SkeletonCard } from "@/components/Skeleton";
 import Header from "@/components/Header";
-import { useToast } from "@/lib/ToastContext";
+import { SkeletonCard } from "@/components/Skeleton";
 
 type WeddingFormState = {
   title: string;
@@ -36,7 +37,7 @@ const initialFormState: WeddingFormState = {
   venue: "",
   venueAddress: "",
   customMessage: "",
-  themeColor: "#3498db",
+  themeColor: "#B89B7A",
 };
 
 type FormAction =
@@ -57,11 +58,12 @@ function formReducer(
 
 export default function DashboardPage() {
   const router = useRouter();
+  const { user } = useAuth();
+  const { showToast } = useToast();
 
   const [showForm, setShowForm] = useState(false);
-  const [form, dispatch] = useReducer(formReducer, initialFormState);
   const [error, setError] = useState("");
-  const { showToast } = useToast();
+  const [form, dispatch] = useReducer(formReducer, initialFormState);
 
   const { data, loading: queryLoading } =
     useQuery<MyWeddingsResponse>(MY_WEDDINGS);
@@ -101,6 +103,7 @@ export default function DashboardPage() {
 
       setShowForm(false);
       dispatch({ type: "RESET" });
+      showToast("Wedding created successfully!", "success");
     } catch (err: unknown) {
       if (err instanceof Error) {
         setError(err.message);
@@ -110,7 +113,7 @@ export default function DashboardPage() {
     }
   };
 
-  const handleDelete = async (
+  const handleDeleteWedding = async (
     e: React.MouseEvent,
     weddingId: string,
     weddingTitle: string,
@@ -137,35 +140,84 @@ export default function DashboardPage() {
     }
   };
 
+  const greeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return "Good morning";
+    if (hour < 18) return "Good afternoon";
+    return "Good evening";
+  };
+
   return (
     <ProtectedRoute>
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-[#FEFCFA]">
         <Header />
 
-        <main className="max-w-5xl mx-auto px-4 py-8">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold">My Weddings</h2>
+        <main className="max-w-5xl mx-auto px-6 py-10">
+          <div className="mb-8">
+            <h1 className="font-serif text-3xl text-[#2D2D2D] mb-1">
+              {greeting()}, {user?.firstName}
+            </h1>
+            <p className="text-sm text-[#A09890]">Your wedding overview</p>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 border border-[#F0EBE4] bg-white mb-10">
+            <div className="py-5 text-center border-b sm:border-b-0 border-r border-[#F0EBE4]">
+              <p className="font-serif text-2xl text-[#2D2D2D]">
+                {data?.myWeddings.length ?? 0}
+              </p>
+              <p className="text-[10px] text-[#A09890] uppercase tracking-[1.5px] mt-1">
+                Weddings
+              </p>
+            </div>
+            <div className="py-5 text-center border-b sm:border-b-0 sm:border-r border-[#F0EBE4]">
+              <p className="font-serif text-2xl text-[#2D2D2D]">
+                {data?.myWeddings.length ?? 0}
+              </p>
+              <p className="text-[10px] text-[#A09890] uppercase tracking-[1.5px] mt-1">
+                Events
+              </p>
+            </div>
+            <div className="py-5 text-center border-r border-[#F0EBE4]">
+              <p className="font-serif text-2xl text-[#4A7C50]">0</p>
+              <p className="text-[10px] text-[#A09890] uppercase tracking-[1.5px] mt-1">
+                Accepted
+              </p>
+            </div>
+            <div className="py-5 text-center">
+              <p className="font-serif text-2xl text-[#9A7C3A]">0</p>
+              <p className="text-[10px] text-[#A09890] uppercase tracking-[1.5px] mt-1">
+                Pending
+              </p>
+            </div>
+          </div>
+
+          <div className="flex justify-between items-center mb-4">
+            <p className="text-[10px] text-[#A09890] uppercase tracking-[2px]">
+              Your weddings
+            </p>
             <button
               onClick={() => setShowForm(!showForm)}
-              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+              className="text-[13px] px-5 py-2 bg-[#2D2D2D] text-[#FEFCFA] uppercase tracking-[1.5px] hover:bg-[#B89B7A] transition-colors duration-300"
             >
-              {showForm ? "Cancel" : "Create Wedding"}
+              {showForm ? "Cancel" : "+ New"}
             </button>
           </div>
 
           {showForm && (
-            <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-              <h3 className="text-lg font-semibold mb-4">New Wedding</h3>
+            <div className="bg-white border border-[#F0EBE4] p-8 mb-6">
+              <h2 className="font-serif text-xl text-[#2D2D2D] mb-6">
+                New wedding
+              </h2>
 
               {error && (
-                <div className="bg-red-50 text-red-600 p-3 rounded mb-4 text-sm">
+                <div className="bg-[#FDF0EF] text-[#A04040] px-4 py-3 text-sm mb-6 border border-[#F5D5D5]">
                   {error}
                 </div>
               )}
 
-              <form onSubmit={handleCreate} className="space-y-4">
+              <form onSubmit={handleCreate} className="space-y-5">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-[10px] text-[#A09890] uppercase tracking-[1px] mb-2">
                     Title *
                   </label>
                   <input
@@ -178,15 +230,15 @@ export default function DashboardPage() {
                         value: e.target.value,
                       })
                     }
-                    placeholder="John & Jane's Wedding"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Petar & Maria's Wedding"
+                    className="w-full py-2 bg-transparent border-b border-[#E0D5C8] text-sm text-[#2D2D2D] placeholder:text-[#D0C8BE] focus:outline-none focus:border-[#B89B7A] transition-colors"
                     required
                   />
                 </div>
 
-                <div className="flex flex-col sm:flex-row gap-4">
+                <div className="flex flex-col sm:flex-row gap-5">
                   <div className="flex-1">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-[10px] text-[#A09890] uppercase tracking-[1px] mb-2">
                       Date *
                     </label>
                     <input
@@ -199,12 +251,12 @@ export default function DashboardPage() {
                           value: e.target.value,
                         })
                       }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full py-2 bg-transparent border-b border-[#E0D5C8] text-sm text-[#2D2D2D] focus:outline-none focus:border-[#B89B7A] transition-colors"
                       required
                     />
                   </div>
                   <div className="flex-1">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-[10px] text-[#A09890] uppercase tracking-[1px] mb-2">
                       Venue *
                     </label>
                     <input
@@ -218,15 +270,15 @@ export default function DashboardPage() {
                         })
                       }
                       placeholder="Rose Garden Estate"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full py-2 bg-transparent border-b border-[#E0D5C8] text-sm text-[#2D2D2D] placeholder:text-[#D0C8BE] focus:outline-none focus:border-[#B89B7A] transition-colors"
                       required
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Venue Address
+                  <label className="block text-[10px] text-[#A09890] uppercase tracking-[1px] mb-2">
+                    Venue address
                   </label>
                   <input
                     type="text"
@@ -238,13 +290,13 @@ export default function DashboardPage() {
                         value: e.target.value,
                       })
                     }
-                    placeholder="123 Garden Lane, City"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="123 Garden Lane, Sofia"
+                    className="w-full py-2 bg-transparent border-b border-[#E0D5C8] text-sm text-[#2D2D2D] placeholder:text-[#D0C8BE] focus:outline-none focus:border-[#B89B7A] transition-colors"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-[10px] text-[#A09890] uppercase tracking-[1px] mb-2">
                     Description
                   </label>
                   <textarea
@@ -258,13 +310,13 @@ export default function DashboardPage() {
                     }
                     placeholder="A brief description of your wedding..."
                     rows={3}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full py-2 bg-transparent border-b border-[#E0D5C8] text-sm text-[#2D2D2D] placeholder:text-[#D0C8BE] focus:outline-none focus:border-[#B89B7A] transition-colors resize-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Custom Invitation Message
+                  <label className="block text-[10px] text-[#A09890] uppercase tracking-[1px] mb-2">
+                    Custom invitation message
                   </label>
                   <textarea
                     value={form.customMessage}
@@ -277,13 +329,13 @@ export default function DashboardPage() {
                     }
                     placeholder="We would be honored to have you celebrate with us!"
                     rows={2}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full py-2 bg-transparent border-b border-[#E0D5C8] text-sm text-[#2D2D2D] placeholder:text-[#D0C8BE] focus:outline-none focus:border-[#B89B7A] transition-colors resize-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Theme Color
+                  <label className="block text-[10px] text-[#A09890] uppercase tracking-[1px] mb-2">
+                    Theme color
                   </label>
                   <div className="flex items-center gap-3">
                     <input
@@ -296,9 +348,9 @@ export default function DashboardPage() {
                           value: e.target.value,
                         })
                       }
-                      className="w-10 h-10 rounded cursor-pointer"
+                      className="w-10 h-10 cursor-pointer border border-[#E0D5C8]"
                     />
-                    <span className="text-sm text-gray-500">
+                    <span className="text-sm text-[#A09890]">
                       {form.themeColor}
                     </span>
                   </div>
@@ -307,83 +359,91 @@ export default function DashboardPage() {
                 <button
                   type="submit"
                   disabled={mutationLoading}
-                  className="w-full py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-blue-300 transition-colors"
+                  className="w-full py-3 bg-[#2D2D2D] text-[#FEFCFA] text-[13px] uppercase tracking-[2px] hover:bg-[#B89B7A] disabled:bg-[#D0C8BE] transition-colors duration-300"
                 >
-                  {mutationLoading ? "Creating..." : "Create Wedding"}
+                  {mutationLoading ? "Creating..." : "Create wedding"}
                 </button>
               </form>
             </div>
           )}
 
           {queryLoading ? (
-            <div className="grid gap-4">
-              <SkeletonCard />
+            <div className="space-y-3">
               <SkeletonCard />
               <SkeletonCard />
             </div>
           ) : data?.myWeddings.length === 0 ? (
-            <div className="bg-white rounded-lg shadow-md p-8 text-center">
-              <p className="text-gray-500 mb-4">
-                You haven&apos;t created any weddings yet.
+            <div className="bg-white border border-[#F0EBE4] py-16 text-center">
+              <p className="font-serif text-lg text-[#2D2D2D] mb-2">
+                No weddings yet
+              </p>
+              <p className="text-sm text-[#A09890] mb-6">
+                Create your first wedding to get started
               </p>
               <button
                 onClick={() => setShowForm(true)}
-                className="text-blue-600 hover:underline"
+                className="text-sm text-[#B89B7A] hover:text-[#2D2D2D] transition-colors duration-300"
               >
-                Create your first wedding
+                + Create wedding
               </button>
             </div>
           ) : (
-            <div className="grid gap-4">
-              {data?.myWeddings.map((wedding) => (
-                <div
-                  key={wedding.id}
-                  onClick={() =>
-                    router.push(`/dashboard/wedding/${wedding.id}`)
-                  }
-                  className="bg-white rounded-lg shadow-md p-6 cursor-pointer hover:shadow-lg transition-shadow"
-                >
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h3 className="text-lg font-semibold">{wedding.title}</h3>
-                      <p className="text-sm text-gray-500 mt-1">
-                        {new Date(wedding.weddingDate).toLocaleDateString(
-                          "en-US",
-                          {
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                          },
-                        )}
-                      </p>
-                      <p className="text-sm text-gray-600 mt-1">
-                        {wedding.venue}
-                      </p>
-                      {wedding.description && (
-                        <p className="text-sm text-gray-400 mt-2">
-                          {wedding.description}
+            <div className="space-y-2">
+              {data?.myWeddings.map((wedding) => {
+                const date = new Date(wedding.weddingDate);
+                const month = date.toLocaleDateString("en-US", {
+                  month: "short",
+                });
+                const day = date.getDate();
+
+                return (
+                  <div
+                    key={wedding.id}
+                    onClick={() =>
+                      router.push(`/dashboard/wedding/${wedding.id}`)
+                    }
+                    className="bg-white border border-[#F0EBE4] px-6 py-5 flex items-center justify-between cursor-pointer hover:bg-[#FAF7F2] transition-colors duration-300"
+                  >
+                    <div className="flex items-center gap-5">
+                      <div className="text-center min-w-[44px]">
+                        <p className="text-[10px] text-[#B89B7A] uppercase tracking-wider">
+                          {month}
                         </p>
-                      )}
+                        <p className="font-serif text-2xl text-[#2D2D2D] leading-tight">
+                          {day}
+                        </p>
+                      </div>
+                      <div className="w-px h-10 bg-[#F0EBE4]" />
+                      <div>
+                        <p className="text-sm text-[#2D2D2D] font-medium">
+                          {wedding.title}
+                        </p>
+                        <p className="text-xs text-[#A09890] mt-1">
+                          {wedding.venue}
+                          {wedding.venueAddress && ` · ${wedding.venueAddress}`}
+                        </p>
+                      </div>
                     </div>
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-4">
                       {wedding.themeColor && (
                         <div
-                          className="w-4 h-4 rounded-full"
+                          className="w-2 h-2"
                           style={{ backgroundColor: wedding.themeColor }}
                         />
                       )}
                       <button
                         onClick={(e) =>
-                          handleDelete(e, wedding.id, wedding.title)
+                          handleDeleteWedding(e, wedding.id, wedding.title)
                         }
-                        className="text-sm text-red-500 hover:text-red-700"
+                        className="text-xs text-[#D0C8BE] hover:text-[#A04040] transition-colors duration-300"
                       >
-                        Delete
+                        Remove
                       </button>
+                      <span className="text-[#D0C8BE] text-lg">&#8250;</span>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </main>

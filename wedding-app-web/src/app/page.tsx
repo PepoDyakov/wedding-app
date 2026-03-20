@@ -8,165 +8,197 @@ export default function HomePage() {
   const { isAuthenticated } = useAuth();
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm">
-        <div className="max-w-5xl mx-auto px-4 py-4 flex justify-between items-center">
-          <h1 className="text-xl font-bold">Wedding App</h1>
+    <div className="min-h-screen bg-[#FEFCFA]">
+      <nav className="flex justify-between items-center px-6 sm:px-8 py-5 bg-white">
+        <div className="text-[17px] tracking-[3px] uppercase text-[#2D2D2D]">
+          TheWeddingApp
+        </div>
+        <div className="hidden sm:flex items-center gap-7">
+          <a
+            href="#features"
+            className="text-sm text-[#999] tracking-wide hover:text-[#B89B7A] transition-colors duration-300"
+          >
+            Features
+          </a>
+          <a
+            href="#how"
+            className="text-sm text-[#999] tracking-wide hover:text-[#B89B7A] transition-colors duration-300"
+          >
+            How it works
+          </a>
           {isAuthenticated ? (
             <button
               onClick={() => router.push("/dashboard")}
-              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm"
+              className="text-[13px] px-5 py-2 border border-[#2D2D2D] text-[#2D2D2D] uppercase tracking-[1.5px] hover:bg-[#2D2D2D] hover:text-[#FEFCFA] transition-all duration-300"
             >
-              Go to Dashboard
+              Dashboard
             </button>
           ) : (
-            <div className="flex gap-3">
+            <div className="flex items-center gap-3">
               <button
                 onClick={() => router.push("/auth")}
-                className="px-4 py-2 text-blue-600 border border-blue-600 rounded-md hover:bg-blue-50 transition-colors text-sm"
+                className="text-sm text-[#B89B7A] tracking-wide hover:text-[#2D2D2D] transition-colors duration-300"
               >
-                Log In
+                Sign in
               </button>
               <button
                 onClick={() => router.push("/auth")}
-                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm"
+                className="text-[13px] px-5 py-2 border border-[#2D2D2D] text-[#2D2D2D] uppercase tracking-[1.5px] hover:bg-[#2D2D2D] hover:text-[#FEFCFA] transition-all duration-300"
               >
-                Get Started
+                Get started
               </button>
             </div>
           )}
         </div>
-      </header>
+        <button
+          onClick={() => router.push("/auth")}
+          className="sm:hidden text-[13px] px-5 py-2 border border-[#2D2D2D] text-[#2D2D2D] uppercase tracking-[1.5px]"
+        >
+          Get started
+        </button>
+      </nav>
 
-      <main>
-        <section className="max-w-5xl mx-auto px-4 py-24 text-center">
-          <h2 className="text-5xl font-bold text-gray-900 mb-6">
-            Your Wedding, Beautifully Organized
-          </h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-10">
-            Create stunning invitations, manage your guest list, collect RSVPs
-            and preferences — all in one place.
-          </p>
+      <section className="py-24 text-center bg-[#FEFCFA] sm:px-12">
+        <p className="text-xs text-[#B89B7A] uppercase tracking-[3px] mb-6 animate-fade-up">
+          Wedding planning, reimagined
+        </p>
+        <h1 className="font-serif text-4xl md:text-5xl text-[#2D2D2D] leading-tight mb-5 animate-fade-up-delay-1">
+          Where every detail
+          <br />
+          falls into place
+        </h1>
+        <p className="text-base text-[#A09890] max-w-sm mx-auto leading-relaxed mb-10 animate-fade-up-delay-2">
+          Elegant invitations, effortless RSVPs, and thoughtful guest management
+          — designed for couples who value simplicity.
+        </p>
+        <div className="flex justify-center gap-3 animate-fade-up-delay-3">
           <button
             onClick={() => router.push("/auth")}
-            className="px-8 py-3 bg-blue-600 text-white text-lg rounded-md hover:bg-blue-700 transition-colors"
+            className="px-9 py-3 bg-[#2D2D2D] text-[#FEFCFA] text-[13px] uppercase tracking-[2px] hover:bg-[#B89B7A] transition-colors duration-300"
           >
-            Create Your Wedding
+            Begin your story
           </button>
-        </section>
-
-        <section className="bg-white py-20">
-          <div className="max-w-5xl mx-auto px-4">
-            <h3 className="text-2xl font-bold text-center mb-12">
-              Everything You Need
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div className="text-center p-6">
-                <div className="w-14 h-14 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
-                  ✉
-                </div>
-                <h4 className="font-semibold text-lg mb-2">
-                  Beautiful Invitations
-                </h4>
-                <p className="text-gray-500">
-                  Send personalized email invitations with custom messages,
-                  theme colors, and QR codes for easy access.
-                </p>
-              </div>
-              <div className="text-center p-6">
-                <div className="w-14 h-14 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
-                  ✓
-                </div>
-                <h4 className="font-semibold text-lg mb-2">RSVP Tracking</h4>
-                <p className="text-gray-500">
-                  Track who&apos;s attending at a glance. Guests can accept or
-                  decline with a single click.
-                </p>
-              </div>
-              <div className="text-center p-6">
-                <div className="w-14 h-14 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
-                  ♫
-                </div>
-                <h4 className="font-semibold text-lg mb-2">
-                  Guest Preferences
-                </h4>
-                <p className="text-gray-500">
-                  Collect food, drink, and music preferences so every detail of
-                  your celebration is perfect.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="py-20">
-          <div className="max-w-5xl mx-auto px-4">
-            <h3 className="text-2xl font-bold text-center mb-12">
-              How It Works
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-              <div className="text-center">
-                <div className="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center mx-auto mb-3 font-bold">
-                  1
-                </div>
-                <h4 className="font-semibold mb-1">Create</h4>
-                <p className="text-sm text-gray-500">
-                  Set up your wedding with date, venue, and a personal touch.
-                </p>
-              </div>
-              <div className="text-center">
-                <div className="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center mx-auto mb-3 font-bold">
-                  2
-                </div>
-                <h4 className="font-semibold mb-1">Invite</h4>
-                <p className="text-sm text-gray-500">
-                  Add guests and send beautiful invitations with one click.
-                </p>
-              </div>
-              <div className="text-center">
-                <div className="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center mx-auto mb-3 font-bold">
-                  3
-                </div>
-                <h4 className="font-semibold mb-1">Collect</h4>
-                <p className="text-sm text-gray-500">
-                  Guests RSVP and share their preferences through a simple page.
-                </p>
-              </div>
-              <div className="text-center">
-                <div className="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center mx-auto mb-3 font-bold">
-                  4
-                </div>
-                <h4 className="font-semibold mb-1">Celebrate</h4>
-                <p className="text-sm text-gray-500">
-                  Focus on your big day knowing every detail is handled.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="bg-blue-600 py-16">
-          <div className="max-w-5xl mx-auto px-4 text-center">
-            <h3 className="text-2xl font-bold text-white mb-4">
-              Ready to Plan Your Perfect Day?
-            </h3>
-            <p className="text-blue-100 mb-8">
-              Join couples who are making their wedding planning effortless.
-            </p>
-            <button
-              onClick={() => router.push("/auth")}
-              className="px-8 py-3 bg-white text-blue-600 text-lg rounded-md hover:bg-blue-50 transition-colors font-medium"
-            >
-              Get Started Free
-            </button>
-          </div>
-        </section>
-      </main>
-
-      <footer className="bg-gray-900 text-gray-400 py-8">
-        <div className="max-w-5xl mx-auto px-4 text-center text-sm">
-          <p>© {new Date().getFullYear()} Wedding App. Made with love.</p>
+          <button
+            onClick={() => {
+              document
+                .getElementById("features")
+                ?.scrollIntoView({ behavior: "smooth" });
+            }}
+            className="px-9 py-3 border border-[#D0C8BE] text-[#2D2D2D] text-[13px] uppercase tracking-[2px] hover:bg-[#2D2D2D] hover:text-[#FEFCFA] hover:border-[#2D2D2D] transition-all duration-300"
+          >
+            Learn more
+          </button>
         </div>
+      </section>
+
+      <section
+        id="features"
+        className="flex flex-col sm:flex-row border-t border-[#F0EBE4] bg-white"
+      >
+        {[
+          {
+            num: "01",
+            title: "Invitations",
+            desc: "Beautifully crafted emails with personal QR codes",
+          },
+          {
+            num: "02",
+            title: "Guest tracking",
+            desc: "Real-time RSVPs and attendance at a glance",
+          },
+          {
+            num: "03",
+            title: "Preferences",
+            desc: "Dietary needs, music requests, and special notes",
+          },
+        ].map((feature, i) => (
+          <div
+            key={feature.num}
+            className={`flex-1 py-10 px-6 text-center hover:bg-[#FEFCFA] transition-colors duration-300 cursor-default ${
+              i < 2 ? "border-b sm:border-b-0 sm:border-r border-[#F0EBE4]" : ""
+            }`}
+          >
+            <p className="text-sm text-[#C8B8A4] tracking-wider mb-3">
+              {feature.num}
+            </p>
+            <h3 className="font-serif text-lg text-[#2D2D2D] mb-1">
+              {feature.title}
+            </h3>
+            <p className="text-sm text-[#A09890] leading-relaxed">
+              {feature.desc}
+            </p>
+          </div>
+        ))}
+      </section>
+
+      <section id="how" className="py-20 bg-[#FEFCFA]">
+        <div className="max-w-3xl mx-auto px-8">
+          <div className="text-center mb-14">
+            <p className="text-xs text-[#B89B7A] uppercase tracking-[3px] mb-3">
+              How it works
+            </p>
+            <h2 className="font-serif text-3xl text-[#2D2D2D]">
+              Four simple steps
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            {[
+              {
+                num: "01",
+                title: "Create",
+                desc: "Set up your wedding with date, venue, and a personal touch",
+              },
+              {
+                num: "02",
+                title: "Invite",
+                desc: "Add guests and send elegant invitations with one click",
+              },
+              {
+                num: "03",
+                title: "Collect",
+                desc: "Guests RSVP and share preferences through a simple page",
+              },
+              {
+                num: "04",
+                title: "Celebrate",
+                desc: "Focus on your day knowing every detail is handled",
+              },
+            ].map((step) => (
+              <div key={step.num} className="text-center cursor-default">
+                <p className="text-sm text-[#C8B8A4] tracking-wider mb-2">
+                  {step.num}
+                </p>
+                <h3 className="font-serif text-lg text-[#2D2D2D] mb-1 hover:-translate-y-0.5 transition-transform duration-300">
+                  {step.title}
+                </h3>
+                <p className="text-sm text-[#A09890] leading-relaxed">
+                  {step.desc}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="py-16 bg-[#2D2D2D] text-center">
+        <p className="text-xs text-[#A09890] uppercase tracking-[3px] mb-4">
+          Ready to begin?
+        </p>
+        <h2 className="font-serif text-3xl text-[#FEFCFA] mb-8">
+          Your story starts here
+        </h2>
+        <button
+          onClick={() => router.push("/auth")}
+          className="px-9 py-3 border border-[#F0EBE4] text-[#FEFCFA] text-[13px] uppercase tracking-[2px] hover:bg-[#F0EBE4] hover:text-[#2D2D2D] transition-all duration-300"
+        >
+          Get started free
+        </button>
+      </section>
+
+      <footer className="py-6 bg-[#FEFCFA] border-t border-[#F0EBE4]">
+        <p className="text-center text-sm text-[#C8B8A4] tracking-wider">
+          &copy; {new Date().getFullYear()} TheWeddingApp
+        </p>
       </footer>
     </div>
   );

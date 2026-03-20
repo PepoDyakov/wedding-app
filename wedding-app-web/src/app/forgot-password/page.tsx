@@ -35,47 +35,49 @@ export default function ForgotPasswordPage() {
 
   return (
     <PublicRoute>
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="w-full max-w-md bg-white rounded-lg shadow-md p-8">
+      <div className="min-h-screen flex items-center justify-center bg-[#FEFCFA]">
+        <div className="w-full max-w-sm px-6">
           {submitted ? (
             <div className="text-center">
-              <h1 className="text-2xl font-bold mb-4">Check Your Email</h1>
-              <p className="text-gray-600 mb-6">
+              <h1 className="font-serif text-2xl text-[#2D2D2D] mb-4">
+                Check your email
+              </h1>
+              <p className="text-sm text-[#A09890] mb-8 leading-relaxed">
                 If an account exists with that email, we&apos;ve sent a password
                 reset link. It expires in 1 hour.
               </p>
               <button
                 onClick={() => router.push("/auth")}
-                className="text-blue-600 hover:underline"
+                className="text-sm text-[#B89B7A] hover:text-[#2D2D2D] transition-colors duration-300"
               >
-                Back to Login
+                Back to sign in
               </button>
             </div>
           ) : (
             <>
-              <h1 className="text-2xl font-bold text-center mb-2">
-                Forgot Password
+              <h1 className="font-serif text-2xl text-[#2D2D2D] text-center mb-1">
+                Forgot password
               </h1>
-              <p className="text-gray-500 text-center text-sm mb-6">
-                Enter your email and we&apos;ll send you a reset link.
+              <p className="text-sm text-[#A09890] text-center mb-8">
+                Enter your email and we&apos;ll send you a reset link
               </p>
 
               {error && (
-                <div className="bg-red-50 text-red-600 p-3 rounded mb-4 text-sm">
+                <div className="bg-[#FDF0EF] text-[#A04040] px-4 py-3 text-sm mb-6 border border-[#F5D5D5]">
                   {error}
                 </div>
               )}
 
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form onSubmit={handleSubmit} className="space-y-5">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-[10px] text-[#A09890] uppercase tracking-[1px] mb-2">
                     Email
                   </label>
                   <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full py-2 bg-transparent border-b border-[#E0D5C8] text-sm text-[#2D2D2D] focus:outline-none focus:border-[#B89B7A] transition-colors"
                     required
                   />
                 </div>
@@ -83,18 +85,18 @@ export default function ForgotPasswordPage() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-blue-300 transition-colors"
+                  className="w-full py-3 bg-[#2D2D2D] text-[#FEFCFA] text-[13px] uppercase tracking-[2px] hover:bg-[#B89B7A] disabled:bg-[#D0C8BE] transition-colors duration-300"
                 >
-                  {loading ? "Sending..." : "Send Reset Link"}
+                  {loading ? "Sending..." : "Send reset link"}
                 </button>
               </form>
 
-              <p className="text-center text-sm text-gray-600 mt-4">
+              <p className="text-center text-sm text-[#A09890] mt-6">
                 <button
                   onClick={() => router.push("/auth")}
-                  className="text-blue-600 hover:underline"
+                  className="text-[#B89B7A] hover:text-[#2D2D2D] transition-colors duration-300"
                 >
-                  Back to Login
+                  Back to sign in
                 </button>
               </p>
             </>
