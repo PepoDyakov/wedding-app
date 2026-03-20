@@ -144,6 +144,17 @@ export default function AuthPage() {
                 minLength={8}
               />
             </div>
+            {isLogin && (
+              <div className="text-right">
+                <button
+                  type="button"
+                  onClick={() => router.push("/forgot-password")}
+                  className="text-sm text-blue-600 hover:underline"
+                >
+                  Forgot password?
+                </button>
+              </div>
+            )}
 
             <button
               type="submit"

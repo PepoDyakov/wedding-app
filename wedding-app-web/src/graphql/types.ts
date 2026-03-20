@@ -173,3 +173,11 @@ export type DeleteWeddingResponse = {
 export type DeleteGuestResponse = {
   deleteGuest: boolean;
 };
+
+export type RequestPasswordResetResponse = {
+  requestPasswordReset: boolean;
+};
+
+export type ResetPasswordResponse = {
+  resetPassword: boolean;
+};

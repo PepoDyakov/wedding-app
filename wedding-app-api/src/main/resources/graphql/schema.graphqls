@@ -23,6 +23,8 @@ type Mutation {
     updateWedding(input: UpdateWeddingInput!): Wedding!
     deleteWedding(id: ID!): Boolean!
     deleteGuest(guestId: ID!): Boolean!
+    requestPasswordReset(email: String!): Boolean!
+    resetPassword(token: String!, newPassword: String!): Boolean!
 }
 
 input RegisterUserInput {

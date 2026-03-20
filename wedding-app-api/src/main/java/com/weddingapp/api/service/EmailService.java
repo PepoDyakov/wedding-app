@@ -71,4 +71,26 @@ public class EmailService {
       throw new RuntimeException("Failed to send email", e);
     }
   }
+
+  public void sendPasswordResetEmail(String toEmail, String firstName, String resetUrl) {
+    String subject = "Reset your password";
+
+    String htmlContent = """
+        <html>
+        <body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+            <h1 style="color: #2c3e50;">Password Reset</h1>
+            <p>Hi %s,</p>
+            <p>We received a request to reset your password. Click the button below to choose a new one:</p>
+            <p><a href="%s" style="display: inline-block; padding: 12px 24px;
+                background-color: #3498db; color: white; text-decoration: none;
+                border-radius: 4px;">Reset Password</a></p>
+            <p>This link expires in 1 hour.</p>
+            <p style="color: #7f8c8d; font-size: 12px; margin-top: 30px;">
+                If you didn't request this, you can safely ignore this email.</p>
+        </body>
+        </html>
+        """.formatted(firstName, resetUrl);
+
+    sendHtmlEmail(toEmail, subject, htmlContent);
+  }
 }
