@@ -71,6 +71,8 @@ public class SecurityConfig {
     CorsConfiguration configuration = new CorsConfiguration();
     configuration.addAllowedOrigin("http://localhost:3000");
     configuration.addAllowedOrigin("http://wedding-alb-505914163.eu-central-1.elb.amazonaws.com");
+    configuration.addAllowedOrigin("http://weddingapp.org");
+    configuration.addAllowedOrigin("http://www.weddingapp.org");
     configuration.addAllowedMethod("*");
     configuration.addAllowedHeader("*");
     configuration.setAllowCredentials(true);
