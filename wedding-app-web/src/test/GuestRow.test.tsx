@@ -4,7 +4,6 @@ import GuestRow from "@/components/GuestRow";
 import { Guest } from "@/graphql/types";
 
 const mockFetchPreferences = vi.fn();
-
 let mockPrefsLoading = false;
 let mockPrefsResult: { guestPreferences: unknown } | undefined = undefined;
 
@@ -17,9 +16,9 @@ vi.mock("@apollo/client/react", () => ({
 }));
 
 const statusColor = {
-  PENDING: "bg-yellow-100 text-yellow-800",
-  ACCEPTED: "bg-green-100 text-green-800",
-  DECLINED: "bg-red-100 text-red-800",
+  PENDING: "bg-[#FDF5E8] text-[#9A7C3A]",
+  ACCEPTED: "bg-[#EDF5EE] text-[#4A7C50]",
+  DECLINED: "bg-[#FDF0EF] text-[#A04040]",
 };
 
 const mockGuest: Guest = {
@@ -75,21 +74,21 @@ describe("GuestRow", () => {
     expect(screen.getByText("ACCEPTED")).toBeInTheDocument();
   });
 
-  it("should call onSendInvitation when clicking Send Invitation", async () => {
+  it("should call onSendInvitation when clicking Send", async () => {
     renderGuestRow();
 
     await act(async () => {
-      screen.getByText("Send Invitation").click();
+      screen.getByText("Send").click();
     });
 
     expect(mockSendInvitation).toHaveBeenCalledWith("1", "Alice Smith");
   });
 
-  it("should call onDeleteGuest when clicking Delete", async () => {
+  it("should call onDeleteGuest when clicking Remove", async () => {
     renderGuestRow();
 
     await act(async () => {
-      screen.getByText("Delete").click();
+      screen.getByText("Remove").click();
     });
 
     expect(mockDeleteGuest).toHaveBeenCalledWith("1", "Alice Smith");
